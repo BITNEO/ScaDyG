@@ -15,7 +15,7 @@ import math
 from model.utils import report_rank_based_eval_scalable
 from torch_sparse import SparseTensor
 
-# 先算time feature，再算node feature，然后用time feature对node feature 做变换
+
 from torch.nn import TransformerEncoderLayer, MultiheadAttention
 
 from collections import defaultdict
@@ -189,10 +189,8 @@ class CustomEncoderLayer(nn.Module):
 #     def __init__(self, d_model, nhead, dim_feedforward=100, dropout=0.1):
 #         super(CustomEncoderLayer, self).__init__()
         
-#         # 随机初始化w向量，元素值在0到1之间
 #         self.w = nn.Parameter(torch.rand(100, 1))  # torch.rand生成0到1之间的随机数
 
-#         # 初始化其他层和参数
 #         self.norm1 = nn.LayerNorm(d_model)
 #         self.dropout1 = nn.Dropout(dropout)
 #         self.ffn = nn.Linear(d_model, dim_feedforward)
@@ -271,20 +269,9 @@ class Encoder(nn.Module):
             self.layer_stack_time_1 = CustomEncoderLayer(d_model,n_head, 4**2, dropout=dropout).to(device)
     
     def repeat_to_n_dim(self,matrix, n):
-        """
-        将一个a*b*16的矩阵重复扩展到a*b*n的矩阵。
-        
-        参数:
-        matrix: 输入的a*b*16的矩阵。
-        n: 目标维度的长度。
-        
-        返回:
-        a*b*n的矩阵。
-        """
-        # 计算需要重复的最小次数（向上取整）
+       
         repeat_times = -(-n // 16)
         
-        # 沿着最后一个维度重复矩阵并截取前n个元素
         repeated_matrix = matrix.repeat(1, 1, repeat_times)
         result_matrix = repeated_matrix[:, :, :n]
         
@@ -439,20 +426,16 @@ class snapshot():
         #self.snapshot_timefeat = self.time_enc(torch.tensor(0).to(torch.float32).to(device))
         self.device = device
         
-        # 初始化 edge_list 作为稀疏矩阵的索引
         edge_index = torch.stack(graph.edges()).t().to(device)
         self.initialize_edge_node_mat(edge_index)
     
     def initialize_edge_node_mat(self, edge_index):
-        # 获取时间特征和时间速率
         self.time_features = self.time_enc(self.time- self.graph.edge_time.to(torch.float32).to(self.device))
         #self.time_rate = torch.matmul(self.time_features, self.snapshot_timefeat.t()) 
         self.time_rate = torch.ones(edge_index.shape[0]).to(self.device)
         
-        # 转换为稀疏邻接矩阵
         self.adj_matrix = self.graph.adjacency_matrix().to(self.device)
         
-        # 转换为稀疏度数矩阵
         in_degree = 1 / self.graph.in_degrees().to(torch.float).to(self.device)
         in_degree[in_degree == float('inf')] = 0
         row_indices = torch.arange(self.node_num, device=self.device)
@@ -465,9 +448,9 @@ class snapshot():
         
 
         
-        edge_values = self.time_rate.repeat(2)  # 每条边的时间权重
-        node_indices = torch.cat([edge_index[:,0], edge_index[:,1]])  # 连接头节点和尾节点索引
-        edge_indices = torch.arange(0, edge_index.size(0)).repeat(2).to(self.device)  # 重复每条边的索引
+        edge_values = self.time_rate.repeat(2) 
+        node_indices = torch.cat([edge_index[:,0], edge_index[:,1]])  
+        edge_indices = torch.arange(0, edge_index.size(0)).repeat(2).to(self.device)  
         self.node_edge_mat = SparseTensor(row=node_indices, col=edge_indices, value=edge_values, sparse_sizes=(self.node_num, edge_index.size(0)))
         self.edge_node_mat = self.node_edge_mat.t()
         
@@ -488,7 +471,6 @@ class snapshot():
     
 
     def empty(self):
-        # 使用del显式地删除属性所指向的张量对象
         del self.graph
         #del self.snapshot_timefeat
         del self.adj_matrix
@@ -496,13 +478,10 @@ class snapshot():
         del self.time_features
         del self.inverse_degree_matrix 
         del self.time_rate
-        # 如果有其他的张量也需要删除，请在这里添加del语句
 
-        # 清理了所有的张量后，调用一下垃圾收集器
         import gc
         gc.collect()
 
-        # 最后，释放PyTorch未使用的缓存显存
         if self.device.type == 'cuda':
             torch.cuda.empty_cache()
 
@@ -545,14 +524,14 @@ def data_partition(data_1,data_2,partition_num):
     return data_1,data_2
 
 def interleave_even_list(lst):
-    # 确定中点
+  
     mid = len(lst) // 2
     
-    # 分割列表为两个相等的子列表
+  
     first_half = lst[:mid]
     second_half = lst[mid:]
     
-    # 交叉合并两个子列表
+ 
     interleaved_list = []
     for i in range(mid):
         interleaved_list.append(first_half[i])
@@ -911,7 +890,7 @@ def train_scalable_tgn(model, model_transformer,optimizer, device, graph_l, logg
                     batch_node = batch_node.to(device)
                     #zero_elements = torch.eq(batch_node, 0)
 
-                    # 使用torch.nonzero()获取值为0的元素的索引
+               
                     # zero_indices = torch.nonzero(zero_elements)
                     # zero_number += (len(zero_indices)/batch_node.shape[2])
                     
