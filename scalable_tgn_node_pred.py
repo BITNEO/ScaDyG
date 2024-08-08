@@ -17,7 +17,6 @@ from torch_sparse import SparseTensor
 from tgb.nodeproppred.evaluate import Evaluator
 from torch.nn import Linear
 
-# 先算time feature，再算node feature，然后用time feature对node feature 做变换
 from torch.nn import TransformerEncoderLayer, MultiheadAttention
 
 from collections import defaultdict
@@ -551,18 +550,18 @@ class snapshot():
         
 
         
-    #     edge_values = self.time_rate.repeat(2)  # 每条边的时间权重
+    #     edge_values = self.time_rate.repeat(2)  
     #     edge_feature = edge_feature.repeat(2) 
 
-    #     node_indices = torch.cat([edge_index[:,0], edge_index[:,1]])  # 连接头节点和尾节点索引
-    #     edge_indices = torch.arange(0, edge_index.size(0)).repeat(2).to(self.device)  # 重复每条边的索引
+    #     node_indices = torch.cat([edge_index[:,0], edge_index[:,1]])  
+    #     edge_indices = torch.arange(0, edge_index.size(0)).repeat(2).to(self.device) 
     #     self.node_edge_mat = SparseTensor(row=node_indices, col=edge_indices, value=edge_values, sparse_sizes=(self.node_num, edge_index.size(0)))
     #     self.edge_node_mat = self.node_edge_mat.t()
         
     def set_edge_features(self, feature):
         feature = feature.to(self.device)
         feature =feature*self.time_features
-        node_feature = self.node_edge_mat.matmul(feature, reduce='sum')  # 使用 mean 或者 sum 作为 reduce 方式
+        node_feature = self.node_edge_mat.matmul(feature, reduce='sum') 
         feature = feature.cpu()
         return node_feature.to(torch.device("cpu"))
     
@@ -577,7 +576,6 @@ class snapshot():
     
 
     def empty(self):
-        # 使用del显式地删除属性所指向的张量对象
         del self.graph
         #del self.snapshot_timefeat
         del self.adj_matrix
@@ -585,13 +583,10 @@ class snapshot():
         del self.time_features
         del self.inverse_degree_matrix 
         del self.time_rate
-        # 如果有其他的张量也需要删除，请在这里添加del语句
 
-        # 清理了所有的张量后，调用一下垃圾收集器
         import gc
         gc.collect()
 
-        # 最后，释放PyTorch未使用的缓存显存
         if self.device.type == 'cuda':
             torch.cuda.empty_cache()
 
@@ -634,14 +629,11 @@ def data_partition(data_1,data_2,partition_num):
     return data_1,data_2
 
 def interleave_even_list(lst):
-    # 确定中点
     mid = len(lst) // 2
     
-    # 分割列表为两个相等的子列表
     first_half = lst[:mid]
     second_half = lst[mid:]
     
-    # 交叉合并两个子列表
     interleaved_list = []
     for i in range(mid):
         interleaved_list.append(first_half[i])
