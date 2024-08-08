@@ -25,8 +25,7 @@ warnings.filterwarnings("ignore")
 # best parameters for v2t,uci_msg: {'a': 169, 'weight_share': 19, 'lr': 0.00011654048009358208}. Best is trial 81 with value: 0.885202496530548
 # def negative_sampling(edges, max_node_id):
 #     """
-#     对于每个正边生成一个负边。负边的起点与正边相同，终点随机生成，且确保负边不与现有边重复。
-    
+
 #     :param edges: 输入的边列表，每个元素是一对 [u, v]
 #     :param max_node_id: 图中所有节点的最大ID值
 #     :return: 生成的负边列表，每个元素是一对 [u, v]
@@ -52,14 +51,7 @@ warnings.filterwarnings("ignore")
 #     return all_edges, labels        
 
 def negative_sampling(edges, max_node_id):
-    """
-    对于每个正边生成一个负边。负边的起点与正边相同，终点随机生成，且确保负边不与现有边重复。
-    
-    :param edges: 输入的边列表，每个元素是一对 [u, v]
-    :param max_node_id: 图中所有节点的最大ID值
-    :return: 生成的负边列表，每个元素是一对 [u, v]
-    """
-    # 转换正边列表为集合形式，便于后续重复性检查
+
     edges = edges.t().tolist()
     edge_set = set(tuple(edge) for edge in edges)
     negative_edges = []
@@ -68,13 +60,11 @@ def negative_sampling(edges, max_node_id):
 
     for u, _ in edges:
         while True:
-            # 随机生成新的终点v
             u_new = random.randint(0, max_node_id)
             v_new = random.randint(0, max_node_id)
-            # 检查生成的负边是否与现有边重复
             if (u_new, v_new) not in edge_set:
                 negative_edges.append([u_new, v_new])
-                break  # 成功生成一个负边后跳出循环
+                break  
     all_edges = edges + negative_edges
     labels = [1] * len(edges) + [0] * len(negative_edges)
 
