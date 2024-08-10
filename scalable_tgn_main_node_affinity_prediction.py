@@ -21,7 +21,7 @@ import time
 warnings.filterwarnings("ignore")
 
 # trade
-# Best trial mrr: 0.6317869592951154
+# 
 # Best hyperparameters: {'a': 0.034143450512559376, 'lr': 0.00886572355558703, 'n': 26}
 
 
