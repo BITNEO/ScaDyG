@@ -17,7 +17,6 @@ from torch_sparse import SparseTensor
 from tgb.nodeproppred.evaluate import Evaluator
 from torch.nn import Linear
 
-# 先算time feature，再算node feature，然后用time feature对node feature 做变换
 from torch.nn import TransformerEncoderLayer, MultiheadAttention
 
 from collections import defaultdict
@@ -26,11 +25,11 @@ import torch.nn.functional as F
 
 # tgbn_token
 
-# Best trial ndcg: 0.6783098271481014
+# 
 # Best hyperparameters: {'a': 0.4574778427702392, 'lr': 0.009674954722585857, 'n': 4}
 
 #genre
-# Best trial mrr: 0.4025415213083274
+# 
 # Best hyperparameters: {'a': 0.482996614483069, 'lr': 0.0016826260952649231, 'n': 60}
 
 class MovingAverage:
