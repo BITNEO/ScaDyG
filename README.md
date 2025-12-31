@@ -1,6 +1,6 @@
 # ScaDyG: A New Paradigm for Large-scale Dynamic Graph Learning
 
-This repository is the PyTorch implementation of ScaDyG.
+This repository is the PyTorch implementation of TNNLS Paper "ScaDyG: A New Paradigm for Large-scale Dynamic Graph Learning".
 
 ## Requirements
 ```shell
