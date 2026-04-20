@@ -1,6 +1,10 @@
 import os
 from typing import List, Union
 
+# This preprocessing script follows the Bitcoin Alpha setup used in
+# "ROLAND: Graph Learning Framework for Dynamic Graphs" and the public
+# implementation at https://github.com/snap-stanford/roland.
+
 import deepsnap
 import numpy as np
 import pandas as pd
