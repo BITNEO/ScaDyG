@@ -22,3 +22,16 @@ python scalable_tgn_main_link_prediction.py --dataset mooc
 We provide the mooc dataset as an example.
 
 The raw data set can be downloaded from https://tgb.complexdatalab.com/ for node affinity prediction, and  https://zenodo.org/records/7008205#.Yv_a_3bMJPZ for dynamic link prediction.
+
+
+```shell
+@ARTICLE{11345715,
+  author={Wu, Xiang and Li, Xunkai and Li, Rong-Hua and Zhao, Kangfei and Wang, Guoren},
+  journal={IEEE Transactions on Neural Networks and Learning Systems}, 
+  title={ScaDyG: A New Paradigm for Large-Scale Dynamic Graph Learning}, 
+  year={2026},
+  volume={},
+  number={},
+  pages={1-15},
+  doi={10.1109/TNNLS.2025.3650673}}
+```
